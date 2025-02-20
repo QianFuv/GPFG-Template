@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FreeFileSync XmlType="GUI" XmlFormat="23">
+    <Notes/>
+    <Compare>
+        <Variant>Content</Variant>
+        <Symlinks>Exclude</Symlinks>
+        <IgnoreTimeShift/>
+    </Compare>
+    <Synchronize>
+        <Differences LeftOnly="right" LeftNewer="right" RightNewer="right" RightOnly="right"/>
+        <DeletionPolicy>RecycleBin</DeletionPolicy>
+        <VersioningFolder Style="Replace"/>
+    </Synchronize>
+    <Filter>
+        <Include>
+            <Item>*</Item>
+        </Include>
+        <Exclude>
+            <Item>/assets</Item>
+            <Item/>
+            <Item>/crash-reports</Item>
+            <Item/>
+            <Item>/libraries</Item>
+            <Item/>
+            <Item>/logs</Item>
+            <Item/>
+            <Item>/mods</Item>
+            <Item/>
+            <Item>/resourcepacks</Item>
+            <Item/>
+            <Item>/saves</Item>
+            <Item/>
+            <Item>/screenshots</Item>
+            <Item/>
+            <Item>/shaderpacks</Item>
+            <Item/>
+            <Item>/versions</Item>
+            <Item/>
+            <Item>/.gitattributes</Item>
+            <Item/>
+            <Item>/.packwizignore</Item>
+            <Item/>
+            <Item>/index.toml</Item>
+            <Item/>
+            <Item>/launcher_profiles.json</Item>
+            <Item/>
+            <Item>/pack.toml</Item>
+            <Item/>
+            <Item>/packwiz.json</Item>
+            <Item/>
+            <Item>/packwiz-installer.jar</Item>
+            <Item/>
+            <Item>/packwiz-installer-bootstrap.jar</Item>
+            <Item/>
+            <Item>/servers.dat</Item>
+            <Item/>
+            <Item>/servers.dat_old</Item>
+            <Item/>
+            <Item>/usercache.json</Item>
+            <Item/>
+            <Item>/usernamecache.json</Item>
+        </Exclude>
+        <SizeMin Unit="None">0</SizeMin>
+        <SizeMax Unit="None">0</SizeMax>
+        <TimeSpan Type="None">0</TimeSpan>
+    </Filter>
+    <FolderPairs>
+        <Pair>
+            <Left>D:\QianFuv\my-modpack-develop\.minecraft</Left>
+            <Right>D:\QianFuv\my-modpack\pack</Right>
+        </Pair>
+    </FolderPairs>
+    <Errors Ignore="false" Retry="0" Delay="5"/>
+    <PostSyncCommand Condition="Completion"/>
+    <LogFolder/>
+    <EmailNotification Condition="Always"/>
+    <GridViewType>Difference</GridViewType>
+</FreeFileSync>
