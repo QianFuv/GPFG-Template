@@ -1,0 +1,54 @@
+name: nightly-build (Modrinth)
+
+on:
+  push:
+    paths:
+      - "pack/**"
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    permissions:
+      actions: write
+      contents: read
+    
+    defaults:
+      run:
+        working-directory: ./pack
+
+    steps:
+      - name: 1. 检出仓库
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: 2. 设置 Go 语言环境
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.23.3"
+          cache: false
+
+      - name: 3. 安装 packwiz
+        run: go install github.com/packwiz/packwiz@latest
+
+      - name: 4. 导出 Modrinth 整合包
+        id: export
+        run: |
+          packwiz modrinth export
+      
+      - name: 5. 重命名整合包文件
+        run: |
+          original_name=$(ls *.mrpack | sed 's/.mrpack$//')
+          cd .. && short_sha=$(git log -1 --format="%h" -- pack/)
+          new_name="${original_name}-build-${short_sha}"
+          cd pack && mv "${original_name}.mrpack" "${new_name}.mrpack"
+          echo "FILE_PATH=${new_name}.mrpack" >> $GITHUB_ENV
+          echo "FILE_NAME=${new_name}" >> $GITHUB_ENV
+      
+      - name: 6. 上传至 Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.FILE_NAME }}
+          path: pack/${{ env.FILE_PATH }}

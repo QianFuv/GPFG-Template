@@ -1,4 +1,4 @@
-name: nightly-build
+name: nightly-build (Curseforge)
 
 on:
   push:
