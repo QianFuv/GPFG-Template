@@ -60,6 +60,12 @@ cd your-modpack
    - **右侧路径**：仓库中的 `pack` 目录
 3. 保存配置文件
 
+**初始化 Packwiz：**
+```bash
+cd pack
+packwiz init
+```
+
 ### 3. 开发工作流
 
 **日常开发步骤：**
