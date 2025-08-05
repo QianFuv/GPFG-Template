@@ -1,91 +1,172 @@
-# GPFG 开发工作流
+# GPFG 整合包开发工作流
 
-GPFG (Git + Packwiz + FreeFileSync + GitHub Actions) 是一套专为 Minecraft 整合包开发设计的全链路解决方案，通过四大工具的有机协同实现了"开发-测试-发布"全流程自动化。
+> **G**it + **P**ackwiz + **F**reeFileSync + **G**itHub Actions  
+> 专为 Minecraft 整合包开发设计的全链路自动化解决方案
 
-## 🌟 工作流概述
+## ✨ 特性亮点
 
-GPFG 工作流通过整合四个强大工具，创建了一个无缝衔接的整合包开发、测试和发布流程：
+- 🔄 **无缝同步** - FreeFileSync 智能同步开发环境与仓库
+- 📦 **轻量分发** - Packwiz 元数据管理，包体积 < 100MB
+- 🚀 **自动构建** - GitHub Actions 自动生成多平台发布包
+- 🎯 **双平台支持** - 同时支持 CurseForge 和 Modrinth
+- 🔍 **版本追踪** - Git 完整记录每次变更，支持快速回滚
+- 📚 **文档集成** - VitePress 驱动的项目文档站点
 
-- **开发环节**：在本地 Minecraft 环境中进行创作与测试
-- **同步环节**：使用 FreeFileSync 将更改智能同步到仓库
-- **版本控制**：Git 提供变更追踪与回溯能力
-- **构建分发**：GitHub Actions 自动生成兼容不同平台的发布版本
+## 🏗️ 工作流程概览
 
-这种工作流极大提升了整合包开发效率，减少了重复工作，并确保了各版本的一致性与可追溯性。
+```mermaid
+graph LR
+    A[本地开发环境] -->|FreeFileSync| B[Git 仓库]
+    B -->|推送提交| C[GitHub Actions]
+    C -->|自动构建| D[CurseForge 包]
+    C -->|自动构建| E[Modrinth 包]
+    D --> F[玩家下载]
+    E --> F
+```
 
-## 🔄 工作流组件详解
+GPFG 工作流实现了从开发到发布的全流程自动化：
 
-### Git：变更追踪的基础
+1. **本地开发** - 在真实 Minecraft 环境中测试整合包
+2. **智能同步** - FreeFileSync 自动过滤并同步关键文件
+3. **版本控制** - Git 追踪所有配置变更，支持协作开发
+4. **自动发布** - 提交后自动构建兼容各大启动器的发布包
 
-Git 在 GPFG 工作流中扮演着核心版本控制系统的角色：
+## 🚀 快速开始
 
-- **精确追踪**：记录整合包每一个配置文件、脚本和元数据的变化
-- **并行开发**：支持通过分支机制同时开发多个特性或版本
-- **回滚能力**：任何时候都可以回到之前的工作状态，确保稳定性
-- **协作基础**：多人开发时的冲突解决与代码合并
+### 1. 环境准备
 
-### Packwiz：整合包元数据管理
+**必需工具：**
+- [Git](https://git-scm.com/) - 版本控制
+- [Go](https://golang.org/) - 用于安装 Packwiz
+- [FreeFileSync](https://freefilesync.org/) - 文件同步
 
-Packwiz 是专为 Minecraft 打造的元数据管理工具：
+**安装 Packwiz：**
+```bash
+go install github.com/packwiz/packwiz@latest
+```
 
-- **模组索引**：通过 toml 文件管理所有模组的来源、版本和依赖
-- **轻量分发**：生成不包含实际模组文件的元数据包，大小通常在 100MB 以下
-- **自动解析**：从 CurseForge/Modrinth 自动拉取模组信息
-- **版本锁定**：精确锁定每个模组版本，确保兼容性
-- **双平台支持**：同时支持 CurseForge 和 Modrinth 两大模组平台
+### 2. 项目设置
 
-### FreeFileSync：开发与发布环境桥接
+**克隆仓库：**
+```bash
+git clone https://github.com/your-username/your-modpack.git
+cd your-modpack
+```
 
-FreeFileSync 在工作流中建立了实际游戏环境与版本控制仓库之间的桥梁：
+**配置 FreeFileSync：**
+1. 打开 `SyncSettings.ffs_gui`
+2. 修改路径配置：
+   - **左侧路径**：你的 Minecraft 开发环境目录（如 `.minecraft`）
+   - **右侧路径**：仓库中的 `pack` 目录
+3. 保存配置文件
 
-- **智能过滤**：自动排除玩家数据、缓存文件和其他非必要文件
-- **双向同步**：支持开发环境与构建环境的双向文件同步
-- **选择性更新**：可配置的规则确保只有关键配置和元数据被同步
-- **操作便捷**：图形界面使得同步操作直观且高效
+### 3. 开发工作流
 
-### GitHub Actions：自动化构建与发布
+**日常开发步骤：**
 
-GitHub Actions 实现了提交后的自动化处理：
+1. **开发阶段** - 在本地 Minecraft 环境中：
+   ```bash
+   # 添加新模组
+   cd pack
+   packwiz curseforge add <mod-name>
+   
+   # 或从 Modrinth 安装
+   packwiz modrinth add <mod-name>
+   ```
 
-- **触发机制**：仓库更新或手动触发时自动启动构建流程
-- **多格式构建**：分别生成 CurseForge (.zip) 和 Modrinth (.mrpack) 格式
-- **唯一标识**：每次构建都基于提交 SHA 生成唯一版本标识
-- **构建存档**：通过 GitHub Artifacts 保存构建结果，方便下载与测试
-- **工作流分离**：CurseForge 和 Modrinth 构建使用独立工作流，可按需启用
+2. **同步变更** - 使用 FreeFileSync：
+   - 打开同步脚本
+   - 选择要同步的文件
+   - 点击"同步"按钮
+   - 系统会自动过滤并同步必要文件
 
-## 💡 工作流价值
+3. **提交发布**：
+   ```bash
+   git add .
+   git commit -m "添加新模组: ModName"
+   git push
+   ```
 
-### 开发者视角
+4. **自动构建** - GitHub Actions 将自动：
+   - 检测到推送后启动构建
+   - 生成 CurseForge (.zip) 和 Modrinth (.mrpack) 格式
+   - 上传到 Artifacts 供下载测试
 
-- **效率提升**：无需手动打包发布，专注于内容创作
-- **错误追踪**：任何问题都可以追溯到具体的更改提交
-- **协作便利**：多人团队可以同时进行开发而不互相干扰
-- **实验自由**：可以创建分支实验新功能，不影响主要版本
-
-### 玩家视角
-
-- **快速更新**：获取开发的最新进展，参与测试最新功能
-- **版本选择**：可以选择任意历史版本进行游玩
-- **下载便捷**：小体积元数据包大幅降低下载时间
-- **启动器兼容**：支持主流启动器如 HMCL、PCL 等
-
-## 📚 技术架构
-
-GPFG 工作流形成了一个完整的技术生态系统：
+## 📁 项目结构
 
 ```
-[本地开发环境] <--> [FreeFileSync] <--> [Git仓库]
-                                           |
-                                           v
-                                    [GitHub Actions]
-                                      /         \
-                             [CurseForge]    [Modrinth]
-                                构建流         构建流
-                                  |              |
-                                  v              v
-                             [.zip包]        [.mrpack包]
-                                  \              /
-                                   \            /
-                                    v          v
-                                   [玩家启动器]
+├── .github/
+│   ├── workflows/
+│   │   └── curseforge_build.yml     # CurseForge 自动构建
+│   └── modrinth_build/
+│       ├── README.md                # Modrinth 构建说明
+│       └── modrinth_build.yml       # Modrinth 构建工作流
+├── pack/                            # 整合包核心目录
+│   ├── .gitattributes              # Git 属性配置
+│   ├── .packwizignore              # Packwiz 忽略文件
+│   └── [整合包配置文件]             # 模组列表、配置等
+├── wiki/                           # VitePress 文档站点
+│   ├── .vitepress/
+│   ├── index.md
+│   └── [其他文档]
+├── SyncSettings.ffs_gui            # FreeFileSync 同步配置
+├── README.md                       # 项目说明文档
+└── LICENSE                         # 许可证文件
 ```
+
+## ⚙️ 高级配置
+
+### 切换构建平台
+
+**启用 Modrinth 构建：**
+1. 将 `.github/modrinth_build/modrinth_build.yml` 移动到 `.github/workflows/`
+2. 可选择性禁用 CurseForge 构建工作流
+
+**自定义构建流程：**
+- 编辑对应的 `.yml` 文件
+- 修改触发条件、构建参数等
+
+### 文档站点部署
+
+**本地预览：**
+```bash
+cd wiki
+npm install
+npm run docs:dev
+```
+
+**部署到 Vercel/Netlify：**
+- 连接 Git 仓库
+- 设置构建目录为 `wiki`
+- 构建命令：`npm run docs:build`
+
+## 🤝 协作开发
+
+### 团队协作流程
+
+1. **Fork 仓库** 或获得协作者权限
+2. **创建功能分支**：
+   ```bash
+   git checkout -b feature/new-mods
+   ```
+3. **本地开发测试** 使用相同的 FreeFileSync 配置
+4. **提交 Pull Request** 并描述变更内容
+5. **代码审查** 确保整合包稳定性
+6. **合并发布** 自动触发构建流程
+
+## 📄 许可证
+
+本项目采用 [Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License](http://creativecommons.org/licenses/by-nc-nd/4.0/) 许可证。
+
+**简单来说：**
+- ✅ 可以下载、使用、分享
+- ❌ 不可用于商业用途
+- ❌ 不可制作衍生作品
+- ✅ 需要注明原作者
+
+## 🙏 致谢
+
+- [Packwiz](https://github.com/packwiz/packwiz) - 优秀的整合包管理工具
+- [FreeFileSync](https://freefilesync.org/) - 强大的文件同步软件
+- [VitePress](https://vitepress.dev/) - 现代化文档站点生成器
+- Minecraft 模组开发社区的无私贡献
